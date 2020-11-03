@@ -30,7 +30,7 @@ clean:
 dist: clean
 	@echo creating dist tarball
 	@mkdir -p scirc-${VERSION}
-	@cp -R LICENSE Makefile README config.mk scirc.c util.c scirc-${VERSION}
+	@cp -R LICENSE Makefile README.md config.mk scirc.c util.c scirc-${VERSION}
 	@tar -cf scirc-${VERSION}.tar scirc-${VERSION}
 	@gzip scirc-${VERSION}.tar
 	@rm -rf scirc-${VERSION}
