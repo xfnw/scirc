@@ -117,7 +117,7 @@ parsesrv(char *cmd) {
 	par = skip(cmd, ' ');
 	txt = skip(par, ':');
 	trim(par);
-	if(!strcmp("001", cmd) && (channel))
+	if(!strcmp("001", cmd) && (channel[0] != '\0'))
 		sout("JOIN %s", channel);
 	if(!strcmp("PONG", cmd))
 		return;
