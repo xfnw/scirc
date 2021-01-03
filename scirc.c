@@ -12,10 +12,13 @@ static char *port = "6667";
 static char *password;
 static char *real;
 static char *user;
+static char *caps;
+static char *sasl;
 static char nick[32];
 static char bufin[4096];
 static char bufout[4096];
 static char channel[256];
+static int state = 0;
 static time_t trespond;
 static FILE *srv;
 
@@ -119,8 +122,27 @@ parsesrv(char *cmd) {
 	par = skip(cmd, ' ');
 	txt = skip(par, ':');
 	trim(par);
-	if(!strcmp("001", cmd) && (channel[0] != '\0'))
-		sout("JOIN %s", channel);
+	if(!strcmp("001", cmd)) {
+			state = 2;
+			if(channel[0] != '\0')
+				sout("JOIN %s", channel);
+	}
+	if(!strcmp("CAP", cmd) && state == 1) {
+		char *dup[512];
+		strcpy(dup, par);
+		strtok(dup, " ");
+		strcpy(dup, strtok(NULL, " "));
+		if(!strcmp(dup,"ACK")) {
+			if(sasl && strstr(txt,"sasl"))
+				sout("AUTHENTICATE PLAIN");
+		}
+		if(!strcmp(dup,"NAK"))
+			sout("CAP END");
+	}
+	if(!strcmp("AUTHENTICATE", cmd) && state == 1 && sasl) {
+		sout("AUTHENTICATE %s", sasl);
+		sout("CAP END");
+	}
 	if(!strcmp("PONG", cmd))
 		return;
 	if(!strcmp("PRIVMSG", cmd))
@@ -128,7 +150,7 @@ parsesrv(char *cmd) {
 	else if(!strcmp("PING", cmd))
 		sout("PONG %s", txt);
 	else {
-		pout(usr, ">< %s (%s): %s", cmd, par, txt);
+		pout(usr, "%s %s :%s", cmd, par, txt);
 		if(!strcmp("NICK", cmd) && !strcmp(usr, nick))
 			strlcpy(nick, txt, sizeof nick);
 	}
@@ -159,6 +181,12 @@ main(int argc, char *argv[]) {
 		case 'r':
 			if(++i < argc) real = argv[i];
 			break;
+		case 'a':
+			if(++i < argc) caps = argv[i];
+			break;
+		case 's':
+			if(++i < argc) sasl = argv[i];
+			break;
 		case 'n':
 			if(++i < argc) strlcpy(nick, argv[i], sizeof nick);
 			break;
@@ -171,14 +199,15 @@ main(int argc, char *argv[]) {
 		case 'v':
 			eprint("scirc-"VERSION"\n");
 		default:
-			eprint("usage: scirc [-h host] [-p port] [-n nick] [-u username] [-r realname] [-c channel] [-k keyword] [-v]\n");
+			eprint("usage: scirc [-h host] [-p port] [-n nick] [-u username] [-r realname] [-a caps] [-s sasltoken] [-c channel] [-k keyword] [-v]\n");
 		}
 	}
 	/* init */
 	i = dial(host, port);
 	srv = fdopen(i, "r+");
 	/* login */
-	
+	state = 1;
+	sout("CAP LS 302");
 	if(password)
 		sout("PASS %s", password);
 	if(!user)
@@ -187,6 +216,10 @@ main(int argc, char *argv[]) {
 		real = nick;
 	sout("NICK %s", nick);
 	sout("USER %s 0 * :%s", user, real);
+
+	if(caps)
+		sout("CAP REQ :%s", caps);
+
 	fflush(srv);
 	setbuf(stdout, NULL);
 	setbuf(srv, NULL);
