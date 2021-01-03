@@ -10,6 +10,8 @@
 static char *host = "localhost";
 static char *port = "6667";
 static char *password;
+static char *real;
+static char *user;
 static char nick[32];
 static char bufin[4096];
 static char bufout[4096];
@@ -151,6 +153,12 @@ main(int argc, char *argv[]) {
 		case 'p':
 			if(++i < argc) port = argv[i];
 			break;
+		case 'u':
+			if(++i < argc) user = argv[i];
+			break;
+		case 'r':
+			if(++i < argc) real = argv[i];
+			break;
 		case 'n':
 			if(++i < argc) strlcpy(nick, argv[i], sizeof nick);
 			break;
@@ -163,17 +171,22 @@ main(int argc, char *argv[]) {
 		case 'v':
 			eprint("scirc-"VERSION"\n");
 		default:
-			eprint("usage: scirc [-h host] [-p port] [-n nick] [-c channel] [-k keyword] [-v]\n");
+			eprint("usage: scirc [-h host] [-p port] [-n nick] [-u username] [-r realname] [-c channel] [-k keyword] [-v]\n");
 		}
 	}
 	/* init */
 	i = dial(host, port);
 	srv = fdopen(i, "r+");
 	/* login */
+	
 	if(password)
 		sout("PASS %s", password);
+	if(!user)
+		user = nick;
+	if(!real)
+		real = nick;
 	sout("NICK %s", nick);
-	sout("USER %s localhost %s :%s", nick, host, nick);
+	sout("USER %s 0 * :%s", user, real);
 	fflush(srv);
 	setbuf(stdout, NULL);
 	setbuf(srv, NULL);
