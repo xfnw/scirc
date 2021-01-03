@@ -219,6 +219,8 @@ main(int argc, char *argv[]) {
 
 	if(caps)
 		sout("CAP REQ :%s", caps);
+	else
+		sout("CAP END");
 
 	fflush(srv);
 	setbuf(stdout, NULL);
