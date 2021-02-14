@@ -139,9 +139,11 @@ parsesrv(char *cmd) {
 		if(!strcmp(dup,"NAK"))
 			sout("CAP END");
 	}
-	if(!strcmp("AUTHENTICATE", cmd) && state == 1 && sasl) {
-		sout("AUTHENTICATE %s", sasl);
-		sout("CAP END");
+	if(state == 1) {
+		if (!strcmp("AUTHENTICATE", cmd) && sasl)
+			sout("AUTHENTICATE %s", sasl);
+		if (!strcmp("903", cmd) && sasl)
+			sout("CAP END");
 	}
 	if(!strcmp("PONG", cmd))
 		return;
