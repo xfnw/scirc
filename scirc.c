@@ -11,7 +11,7 @@ static char *host = "localhost";
 static char *port = "6667";
 static char *password;
 static char *real;
-static char *user;
+static char *ident;
 static char *caps;
 static char *sasl;
 static char nick[32];
@@ -178,7 +178,7 @@ main(int argc, char *argv[]) {
 			if(++i < argc) port = argv[i];
 			break;
 		case 'u':
-			if(++i < argc) user = argv[i];
+			if(++i < argc) ident = argv[i];
 			break;
 		case 'r':
 			if(++i < argc) real = argv[i];
@@ -212,12 +212,12 @@ main(int argc, char *argv[]) {
 	sout("CAP LS 302");
 	if(password)
 		sout("PASS %s", password);
-	if(!user)
-		user = nick;
+	if(!ident)
+		ident = nick;
 	if(!real)
 		real = nick;
 	sout("NICK %s", nick);
-	sout("USER %s 0 * :%s", user, real);
+	sout("USER %s 0 * :%s", ident, real);
 
 	if(caps)
 		sout("CAP REQ :%s", caps);
