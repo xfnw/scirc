@@ -131,23 +131,27 @@ parsesrv(char *cmd) {
 	if(!strcmp("366", cmd)) {
 		state = 3;
 	}
-	if(!strcmp("CAP", cmd) && state == 1) {
-		char *dup[512];
-		strcpy(dup, par);
-		strtok(dup, " ");
-		strcpy(dup, strtok(NULL, " "));
-		if(!strcmp(dup,"ACK")) {
-			if(sasl && strstr(txt,"sasl"))
-				sout("AUTHENTICATE PLAIN");
-		}
-		if(!strcmp(dup,"NAK"))
-			sout("CAP END");
-	}
 	if(state == 1) {
+		if(!strcmp("CAP", cmd)) {
+			char *dup[512];
+			strcpy(dup, par);
+			strtok(dup, " ");
+			strcpy(dup, strtok(NULL, " "));
+			if(!strcmp(dup,"ACK")) {
+				if(sasl && strstr(txt,"sasl"))
+					sout("AUTHENTICATE PLAIN");
+			}
+			if(!strcmp(dup,"NAK"))
+				sout("CAP END");
+		}
 		if (!strcmp("AUTHENTICATE", cmd) && sasl)
 			sout("AUTHENTICATE %s", sasl);
 		if (!strcmp("903", cmd) && sasl)
 			sout("CAP END");
+		if (!strcmp("433", cmd) && strlen(nick) + 2 < sizeof(nick)) {
+			strcat(nick, "_");
+			sout("NICK %s", nick);
+		}
 	}
 	if(!strcmp("PONG", cmd))
 		return;
@@ -196,7 +200,7 @@ main(int argc, char *argv[]) {
 		case 'n':
 			if(++i < argc) strlcpy(nick, argv[i], sizeof nick);
 			break;
-		case 'c':
+		case 'j':
 			if(++i < argc) strlcpy(channel, argv[i], sizeof channel);
 			break;
 		case 'k':
@@ -208,7 +212,7 @@ main(int argc, char *argv[]) {
 		case 'v':
 			eprint("scirc-"VERSION"\n");
 		default:
-			eprint("usage: scirc [-h host] [-p port] [-n nick] [-u username] [-r realname] [-a caps] [-s sasltoken] [-c channel] [-k keyword] [-w] [-v]\n");
+			eprint("usage: scirc [-h host] [-p port] [-n nick] [-u username] [-r realname] [-a caps] [-s sasltoken] [-j channel] [-k keyword] [-w] [-v]\n");
 		}
 	}
 	/* init */
