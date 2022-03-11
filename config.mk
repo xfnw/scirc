@@ -1,10 +1,9 @@
-VERSION = 1.1
+VERSION = 1.2
 
 # Customize below to fit your system
 
 # paths
 PREFIX = ~/.local
-MANPREFIX = ${PREFIX}/share/man
 
 # includes and libs
 INCS = -I. -I/usr/include
