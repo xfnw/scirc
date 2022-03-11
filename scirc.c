@@ -19,6 +19,7 @@ static char bufin[4096];
 static char bufout[4096];
 static char channel[256];
 static int state = 0;
+static int waitjoin = 0;
 static time_t trespond;
 static FILE *srv;
 
@@ -123,9 +124,12 @@ parsesrv(char *cmd) {
 	txt = skip(par, ':');
 	trim(par);
 	if(!strcmp("001", cmd)) {
-			state = 2;
-			if(channel[0] != '\0')
-				sout("JOIN %s", channel);
+		state = 2;
+		if(channel[0] != '\0')
+			sout("JOIN %s", channel);
+	}
+	if(!strcmp("366", cmd)) {
+		state = 3;
 	}
 	if(!strcmp("CAP", cmd) && state == 1) {
 		char *dup[512];
@@ -198,10 +202,13 @@ main(int argc, char *argv[]) {
 		case 'k':
 			if(++i < argc) password = argv[i];
 			break;
+		case 'w':
+			waitjoin = 1;
+			break;
 		case 'v':
 			eprint("scirc-"VERSION"\n");
 		default:
-			eprint("usage: scirc [-h host] [-p port] [-n nick] [-u username] [-r realname] [-a caps] [-s sasltoken] [-c channel] [-k keyword] [-v]\n");
+			eprint("usage: scirc [-h host] [-p port] [-n nick] [-u username] [-r realname] [-a caps] [-s sasltoken] [-c channel] [-k keyword] [-w] [-v]\n");
 		}
 	}
 	/* init */
@@ -251,7 +258,7 @@ main(int argc, char *argv[]) {
 			parsesrv(bufin);
 			trespond = time(NULL);
 		}
-		if(FD_ISSET(0, &rd)) {
+		if(FD_ISSET(0, &rd) && (!waitjoin || state == 3)) {
 			if(fgets(bufin, sizeof bufin, stdin) == NULL)
 				eprint("scirc: broken pipe\n");
 			parsein(bufin);
