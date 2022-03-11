@@ -31,8 +31,7 @@ dist: clean
 	@echo creating dist tarball
 	@mkdir -p scirc-${VERSION}
 	@cp -R LICENSE Makefile README.md config.mk scirc.c util.c scirc-${VERSION}
-	@tar -cf scirc-${VERSION}.tar scirc-${VERSION}
-	@gzip scirc-${VERSION}.tar
+	@tar -caf scirc-${VERSION}.tar.zst scirc-${VERSION}
 	@rm -rf scirc-${VERSION}
 
 install: all
@@ -40,12 +39,9 @@ install: all
 	@mkdir -p ${DESTDIR}${PREFIX}/bin
 	@cp -f scirc ${DESTDIR}${PREFIX}/bin
 	@chmod 755 ${DESTDIR}${PREFIX}/bin/scirc
-	@echo installing manual page to ${DESTDIR}${MANPREFIX}/man1
-	@mkdir -p ${DESTDIR}${MANPREFIX}/man1
 
 uninstall:
 	@echo removing executable file from ${DESTDIR}${PREFIX}/bin
 	@rm -f ${DESTDIR}${PREFIX}/bin/scirc
-	@echo removing manual page from ${DESTDIR}${MANPREFIX}/man1
 
 .PHONY: all options clean dist install uninstall
