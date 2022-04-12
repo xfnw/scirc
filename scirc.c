@@ -20,6 +20,7 @@ static char bufout[4096];
 static char channel[256];
 static int state = 0;
 static int waitjoin = 0;
+static int quiet = 0;
 static time_t trespond;
 static FILE *srv;
 
@@ -55,7 +56,8 @@ privmsg(char *channel, char *msg) {
 		pout("", "No channel to send to");
 		return;
 	}
-	pout(channel, "<%s> %s", nick, msg);
+	if(quiet == 0)
+		pout(channel, "<%s> %s", nick, msg);
 	sout("PRIVMSG %s :%s", channel, msg);
 }
 
@@ -209,10 +211,13 @@ main(int argc, char *argv[]) {
 		case 'w':
 			waitjoin = 1;
 			break;
+		case 'q':
+			quiet = 1;
+			break;
 		case 'v':
 			eprint("scirc-"VERSION"\n");
 		default:
-			eprint("usage: scirc [-h host] [-p port] [-n nick] [-u username] [-r realname] [-a caps] [-s sasltoken] [-j channel] [-k keyword] [-w] [-v]\n");
+			eprint("usage: scirc [-h host] [-p port] [-n nick] [-u username] [-r realname] [-a caps] [-s sasltoken] [-j channel] [-k keyword] [-w] [-q] [-v]\n");
 		}
 	}
 	/* init */
