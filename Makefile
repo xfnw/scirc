@@ -30,15 +30,16 @@ clean:
 dist: clean
 	@echo creating dist tarball
 	@mkdir -p scirc-${VERSION}
-	@cp -R LICENSE Makefile README.md config.mk scirc.c util.c scirc-${VERSION}
+	@cp -R LICENSE Makefile README.md config.mk scirc.c util.c scirc.1 scirc-${VERSION}
 	@tar -caf scirc-${VERSION}.tar.zst scirc-${VERSION}
 	@rm -rf scirc-${VERSION}
 
 install: all
 	@echo installing executable file to ${DESTDIR}${PREFIX}/bin
-	@mkdir -p ${DESTDIR}${PREFIX}/bin
+	@mkdir -p ${DESTDIR}${PREFIX}/bin ${DESTDIR}${PREFIX}/man/man1
 	@cp -f scirc ${DESTDIR}${PREFIX}/bin
 	@chmod 755 ${DESTDIR}${PREFIX}/bin/scirc
+	@cp -f scirc.1 ${DESTDIR}${PREFIX}/man/man1
 
 uninstall:
 	@echo removing executable file from ${DESTDIR}${PREFIX}/bin

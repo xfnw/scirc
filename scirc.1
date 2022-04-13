@@ -1,0 +1,100 @@
+.Dd April 12th, 2022
+.Dt scirc 1
+.Os
+.
+.Sh NAME
+.Nm scirc
+.Nd pipe-friendly irc client
+.
+.Sh SYNOPSIS
+.Nm
+.Op Fl h Ar host
+.Op Fl p Ar port
+.Op Fl n Ar nick
+.Op Fl u Ar username
+.Op Fl r Ar realname
+.Op Fl a Ar caps
+.Op Fl s Ar sasltoken
+.Op Fl j Ar channel
+.Op Fl k Ar keyword
+.Op Fl w
+.Op Fl q
+.
+.Nm
+.Op Fl v
+.
+.Sh DESCRIPTION
+connect to an irc server
+
+the arguments are as follows:
+.
+.Bl -tag -width Ds
+.
+.It Fl h Ar host
+the
+.Ar host
+to connect to
+.
+.It Fl p Ar port
+the
+.Ar port
+to connect to
+.
+.It Fl n Ar nick
+set the nickname. uses value of the
+.Cm USER
+environment variable by default
+.
+.It Fl u Ar username
+set the username/ident. uses value of
+.Fl n Ar nickname
+by default
+.
+.It Fl r Ar realname
+set the realname. uses value of
+.Fl n Ar nickname
+by default
+.
+.It Fl a Ar caps
+blindly request ircv3
+.Ar caps
+.
+.It Fl s Ar sasltoken
+authenticate using sasl with base64-encoded
+.Ar sasltoken .
+requires
+.Ql sasl
+to be specified in
+.Fl a Ar caps
+to be useful
+.
+.It Fl j Ar channel
+join
+.Ar channel
+on connect
+.
+.It Fl k Ar keyword
+specify
+.Ar keyword
+when joining the
+.Fl j Ar channel
+.
+.It Fl w
+wait until after joining a channel before accepting any
+input. useful for pipes, however you may become stuck during
+a failed registration
+.
+.It Fl q
+do not echo messages as they are sent
+.
+.It Fl v
+print the version and exit
+.
+.El
+.
+.Sh BUGS
+please report any bugs found to
+.Lk https://github.com/xfnw/scirc/issues
+.
+.Sh AUTHORS
+.An xfnw Aq Mt xfnw@riseup.net
