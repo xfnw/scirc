@@ -25,7 +25,7 @@ scirc: ${OBJ}
 
 clean:
 	@echo cleaning
-	@rm -f scirc ${OBJ} scirc-${VERSION}.tar.gz
+	@rm -f scirc ${OBJ} scirc-${VERSION}.tar.zst
 
 dist: clean
 	@echo creating dist tarball
