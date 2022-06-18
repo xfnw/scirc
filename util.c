@@ -18,7 +18,7 @@ eprint(const char *fmt, ...) {
 static int
 dial(char *host, char *port) {
 	static struct addrinfo hints;
-	int sock;
+	int sock = 0;
 	struct addrinfo *res, *r;
 
 	memset(&hints, 0, sizeof hints);
