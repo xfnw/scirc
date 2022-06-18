@@ -18,7 +18,7 @@ eprint(const char *fmt, ...) {
 static int
 dial(char *host, char *port) {
 	static struct addrinfo hints;
-	int srv;
+	int sock;
 	struct addrinfo *res, *r;
 
 	memset(&hints, 0, sizeof hints);
@@ -27,16 +27,16 @@ dial(char *host, char *port) {
 	if(getaddrinfo(host, port, &hints, &res) != 0)
 		eprint("error: cannot resolve hostname '%s':", host);
 	for(r = res; r; r = r->ai_next) {
-		if((srv = socket(r->ai_family, r->ai_socktype, r->ai_protocol)) == -1)
+		if((sock = socket(r->ai_family, r->ai_socktype, r->ai_protocol)) == -1)
 			continue;
-		if(connect(srv, r->ai_addr, r->ai_addrlen) == 0)
+		if(connect(sock, r->ai_addr, r->ai_addrlen) == 0)
 			break;
-		close(srv);
+		close(sock);
 	}
 	freeaddrinfo(res);
 	if(!r)
 		eprint("error: cannot connect to host '%s'\n", host);
-	return srv;
+	return sock;
 }
 
 #define strlcpy _strlcpy
@@ -48,7 +48,7 @@ strlcpy(char *to, const char *from, int l) {
 
 static char *
 eat(char *s, int (*p)(int), int r) {
-	while(s != '\0' && p(*s) == r)
+	while(*s != '\0' && p(*s) == r)
 		s++;
 	return s;
 }
