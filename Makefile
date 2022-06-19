@@ -23,6 +23,10 @@ scirc: ${OBJ}
 	@echo CC -o $@
 	@${CC} -o $@ ${OBJ} ${LDFLAGS}
 
+check:
+	@echo checking with cppcheck --enable=all
+	@cppcheck --enable=all --suppress=missingIncludeSystem .
+
 clean:
 	@echo cleaning
 	@rm -f scirc ${OBJ} scirc-${VERSION}.tar.zst
