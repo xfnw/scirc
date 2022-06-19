@@ -63,7 +63,7 @@ privmsg(char *channel, char *msg) {
 
 static void
 parsein(char *s) {
-	char c, *p;
+	char c;
 
 	if(s[0] == '\0')
 		return;
@@ -74,6 +74,8 @@ parsein(char *s) {
 	}
 	c = *++s;
 	if(c != '\0' && isspace(s[1])) {
+		char *p;
+
 		p = s + 2;
 		switch(c) {
 		case 'j':
@@ -170,13 +172,16 @@ parsesrv(char *cmd) {
 
 int
 main(int argc, char *argv[]) {
-	int i, c;
+	int i;
+
 	struct timeval tv;
 	const char *user = getenv("USER");
 	fd_set rd;
 
 	strlcpy(nick, user ? user : "unknown", sizeof nick);
 	for(i = 1; i < argc; i++) {
+		int c;
+
 		c = argv[i][1];
 		if(argv[i][0] != '-' || argv[i][2])
 			c = -1;
