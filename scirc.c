@@ -135,7 +135,7 @@ parsesrv(char *cmd) {
 	}
 	if(state == 1) {
 		if(!strcmp("CAP", cmd)) {
-			char *dup[512];
+			char dup[512];
 			strcpy(dup, par);
 			strtok(dup, " ");
 			strcpy(dup, strtok(NULL, " "));
