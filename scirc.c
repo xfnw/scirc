@@ -6,6 +6,7 @@
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
+#include <sys/select.h>
 
 static char *host = "localhost";
 static char *port = "6667";
