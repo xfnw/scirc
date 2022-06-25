@@ -17,6 +17,7 @@
 .Op Fl s Ar sasltoken
 .Op Fl j Ar channel
 .Op Fl k Ar keyword
+.Op Fl b Ar prefix
 .Op Fl w
 .Op Fl q
 .
@@ -78,6 +79,18 @@ specify
 .Ar keyword
 when joining the
 .Fl j Ar channel
+.
+.It Fl b Ar prefix
+enable mode for making rudimentary pipe-based irc bots,
+which redirects all normal messages to
+.Pa stderr
+and sends messages beginning with
+.Ar prefix
+to
+.Pa stdout
+with the
+.Ar prefix
+ommited
 .
 .It Fl w
 wait until after joining a channel before accepting any

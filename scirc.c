@@ -19,6 +19,7 @@ static char nick[32];
 static char bufin[4096];
 static char bufout[4096];
 static char channel[256];
+static char botprefix[32] = "";
 static int state = 0;
 static int waitjoin = 0;
 static int quiet = 0;
@@ -38,7 +39,10 @@ pout(char *channel, char *fmt, ...) {
 	va_end(ap);
 	t = time(NULL);
 	strftime(timestr, sizeof timestr, "%T", localtime(&t));
-	fprintf(stdout, "%-12s: %s %s\n", channel, timestr, bufout);
+	if (*botprefix == '\0')
+		fprintf(stdout, "%-12s: %s %s\n", channel, timestr, bufout);
+	else
+		fprintf(stderr, "%-12s: %s %s\n", channel, timestr, bufout);
 }
 
 static void
@@ -105,6 +109,9 @@ parsein(char *s) {
 		case 's':
 			strlcpy(channel, p, sizeof channel);
 			return;
+		case 'b':
+			strlcpy(botprefix, p, sizeof botprefix);
+			return;
 		}
 	}
 	sout("%s", s);
@@ -160,8 +167,12 @@ parsesrv(char *cmd) {
 	}
 	if(!strcmp("PONG", cmd))
 		return;
-	if(!strcmp("PRIVMSG", cmd))
+	if(!strcmp("PRIVMSG", cmd)) {
 		pout(par, "<%s> %s", usr, txt);
+		if ((*botprefix != '\0') && (strlen(txt) > strlen(botprefix)) &&
+				!(strncmp(botprefix, txt, strlen(botprefix))))
+			fprintf(stdout, "%s\n", txt+strlen(botprefix));
+	}
 	else if(!strcmp("PING", cmd))
 		sout("PONG %s", txt);
 	else {
@@ -211,6 +222,9 @@ main(int argc, char *argv[]) {
 		case 'j':
 			if(++i < argc) strlcpy(channel, argv[i], sizeof channel);
 			break;
+		case 'b':
+			if(++i < argc) strlcpy(botprefix, argv[i], sizeof botprefix);
+			break;
 		case 'k':
 			if(++i < argc) password = argv[i];
 			break;
@@ -223,7 +237,7 @@ main(int argc, char *argv[]) {
 		case 'v':
 			eprint("scirc-"VERSION"\n");
 		default:
-			eprint("usage: scirc [-h host] [-p port] [-n nick] [-u username] [-r realname] [-a caps] [-s sasltoken] [-j channel] [-k keyword] [-w] [-q] [-v]\n");
+			eprint("usage: scirc [-h host] [-p port] [-n nick] [-u username] [-r realname] [-a caps] [-s sasltoken] [-j channel] [-k keyword] [-b prefix] [-w] [-q] [-v]\n");
 		}
 	}
 	/* init */
