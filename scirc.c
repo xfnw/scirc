@@ -91,8 +91,8 @@ parsein(char *s) {
 				s = channel;
 			if(*p)
 				*p++ = '\0';
-			if(!*p)
-				p = "scirc - bad irc client";
+			if(*p == '\0')
+				p = "scirc - the pipe friendly irc client";
 			sout("PART %s :%s", s, p);
 			return;
 		case 'm':
