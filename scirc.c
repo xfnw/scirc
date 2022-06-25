@@ -23,6 +23,7 @@ static char botprefix[32] = "";
 static int state = 0;
 static int waitjoin = 0;
 static int quiet = 0;
+static int autoswitch = 0;
 static time_t trespond;
 static FILE *srv;
 
@@ -169,9 +170,15 @@ parsesrv(char *cmd) {
 		return;
 	if(!strcmp("PRIVMSG", cmd)) {
 		pout(par, "<%s> %s", usr, txt);
-		if ((*botprefix != '\0') && (strlen(txt) > strlen(botprefix)) &&
-				!(strncmp(botprefix, txt, strlen(botprefix))))
-			fprintf(stdout, "%s\n", txt+strlen(botprefix));
+		if ((*botprefix != '\0')) {
+			if ((strlen(txt) > strlen(botprefix)) &&
+					!(strncmp(botprefix, txt, strlen(botprefix)))) {
+				if (autoswitch)
+					strlcpy(channel, par, sizeof channel);
+				fprintf(stdout, "%s\n", txt+strlen(botprefix));
+			}
+		}else if (autoswitch)
+			strlcpy(channel, par, sizeof channel);
 	}
 	else if(!strcmp("PING", cmd))
 		sout("PONG %s", txt);
@@ -234,10 +241,13 @@ main(int argc, char *argv[]) {
 		case 'q':
 			quiet = 1;
 			break;
+		case 'S':
+			autoswitch = 1;
+			break;
 		case 'v':
 			eprint("scirc-"VERSION"\n");
 		default:
-			eprint("usage: scirc [-h host] [-p port] [-n nick] [-u username] [-r realname] [-a caps] [-s sasltoken] [-j channel] [-k keyword] [-b prefix] [-w] [-q] [-v]\n");
+			eprint("usage: scirc [-h host] [-p port] [-n nick] [-u username] [-r realname] [-a caps] [-s sasltoken] [-j channel] [-k keyword] [-b prefix] [-w] [-q] [-S] [-v]\n");
 		}
 	}
 	/* init */

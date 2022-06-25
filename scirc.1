@@ -1,4 +1,4 @@
-.Dd April 12th, 2022
+.Dd June 25th, 2022
 .Dt scirc 1
 .Os
 .
@@ -20,6 +20,7 @@
 .Op Fl b Ar prefix
 .Op Fl w
 .Op Fl q
+.Op Fl S
 .
 .Nm
 .Op Fl v
@@ -99,6 +100,12 @@ a failed registration
 .
 .It Fl q
 do not echo messages as they are sent
+.
+.It Fl S
+automatically switch to a channel when receiving a message from it. if
+.Fl b Ar prefix
+is enabled, then switching will only happen when the message matches
+.Ar prefix
 .
 .It Fl v
 print the version and exit
