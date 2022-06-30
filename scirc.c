@@ -19,7 +19,7 @@ static char nick[32];
 static char bufin[4096];
 static char bufout[4096];
 static char channel[256];
-static char botprefix[32] = "";
+static char botprefix[32] = "\n";
 static int state = 0;
 static int waitjoin = 0;
 static int quiet = 0;
@@ -40,7 +40,7 @@ pout(char *channel, char *fmt, ...) {
 	va_end(ap);
 	t = time(NULL);
 	strftime(timestr, sizeof timestr, "%T", localtime(&t));
-	if (*botprefix == '\0')
+	if (*botprefix == '\n')
 		fprintf(stdout, "%-12s: %s %s\n", channel, timestr, bufout);
 	else
 		fprintf(stderr, "%-12s: %s %s\n", channel, timestr, bufout);
@@ -111,7 +111,8 @@ parsein(char *s) {
 			strlcpy(channel, p, sizeof channel);
 			return;
 		case 'b':
-			strlcpy(botprefix, p, sizeof botprefix);
+			if (*botprefix != '\n')
+				strlcpy(botprefix, p, sizeof botprefix);
 			return;
 		}
 	}
@@ -170,7 +171,7 @@ parsesrv(char *cmd) {
 		return;
 	if(!strcmp("PRIVMSG", cmd)) {
 		pout(par, "<%s> %s", usr, txt);
-		if ((*botprefix != '\0')) {
+		if ((*botprefix != '\n')) {
 			if ((strlen(txt) > strlen(botprefix)) &&
 					!(strncmp(botprefix, txt, strlen(botprefix)))) {
 				if (autoswitch)
