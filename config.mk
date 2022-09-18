@@ -1,4 +1,4 @@
-VERSION = 1.5.1
+VERSION = 1.5.2
 
 # Customize below to fit your system
 

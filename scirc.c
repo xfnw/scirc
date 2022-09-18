@@ -154,9 +154,13 @@ parsesrv(char *cmd) {
 			if(!strcmp(dup,"ACK")) {
 				if(sasl && strstr(txt,"sasl"))
 					sout("AUTHENTICATE PLAIN");
+				else
+					sout("CAP END");
 			}
-			if(!strcmp(dup,"NAK"))
-				sout("CAP END");
+			if(!strcmp(dup,"NAK")) {
+				if(!sasl)
+					sout("CAP END");
+			}
 		}
 		if (!strcmp("AUTHENTICATE", cmd) && sasl)
 			sout("AUTHENTICATE %s", sasl);
