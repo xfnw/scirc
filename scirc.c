@@ -178,12 +178,20 @@ parsesrv(char *cmd) {
 		if ((*botprefix != '\n')) {
 			if ((strlen(txt) > strlen(botprefix)) &&
 					!(strncmp(botprefix, txt, strlen(botprefix)))) {
-				if (autoswitch)
-					strlcpy(channel, par, sizeof channel);
+				if (autoswitch) {
+					if (!strcmp(nick, par))
+						strlcpy(channel, usr, sizeof channel);
+					else
+						strlcpy(channel, par, sizeof channel);
+				}
 				fprintf(stdout, "%s\n", txt+strlen(botprefix));
 			}
-		}else if (autoswitch)
-			strlcpy(channel, par, sizeof channel);
+		} else if (autoswitch) {
+			if (!strcmp(nick, par))
+				strlcpy(channel, usr, sizeof channel);
+			else
+				strlcpy(channel, par, sizeof channel);
+		}
 	}
 	else if(!strcmp("PING", cmd))
 		sout("PONG %s", txt);
