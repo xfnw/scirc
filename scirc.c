@@ -15,7 +15,6 @@ static char *real;
 static char *ident;
 static char *caps;
 static char *sasl;
-static char *psource;
 static char nick[32];
 static char bufin[4096];
 static char bufout[4096];
@@ -25,6 +24,7 @@ static int state = 0;
 static int waitjoin = 0;
 static int quiet = 0;
 static int autoswitch = 0;
+static int pmode = 0;
 static time_t trespond;
 static FILE *srv;
 
@@ -76,8 +76,8 @@ parsein(char *s) {
 		return;
 	skip(s, '\n');
 	if(s[0] != '/') {
-		if (psource)
-			sout(":%s %s", psource, s);
+		if (pmode)
+			sout(":%s %s", nick, s);
 		else
 			privmsg(channel, s);
 		return;
@@ -170,8 +170,8 @@ parsesrv(char *cmd) {
 			sout("AUTHENTICATE %s", sasl);
 		if (!strcmp("903", cmd) && sasl)
 			sout("CAP END");
-		if (psource) {
-			if (!strcmp("376", cmd) && !strcmp(psource, par)) {
+		if (pmode) {
+			if (!strcmp("376", cmd) && !strcmp(nick, par)) {
 				sout("376 %s :End", usr);
 				state = 2;
 			}
@@ -205,8 +205,8 @@ parsesrv(char *cmd) {
 		}
 	}
 	else if(!strcmp("PING", cmd))
-		if (psource) {
-			sout(":%s PONG :%s%s", psource, par, txt);
+		if (pmode) {
+			sout(":%s PONG :%s%s", nick, par, txt);
 		} else
 			sout("PONG :%s%s", par, txt);
 	else {
@@ -263,7 +263,7 @@ main(int argc, char *argv[]) {
 			if(++i < argc) password = argv[i];
 			break;
 		case 'P':
-			if(++i < argc) psource = argv[i];
+			pmode = 1;
 			break;
 		case 'w':
 			waitjoin = 1;
@@ -291,8 +291,8 @@ main(int argc, char *argv[]) {
 		ident = nick;
 	if(!real)
 		real = nick;
-	if (psource) {
-		sout("SERVER %s :%s", psource, nick);
+	if (pmode) {
+		sout("SERVER %s :%s", nick, real);
 	} else {
 		sout("CAP LS 302");
 		sout("NICK %s", nick);

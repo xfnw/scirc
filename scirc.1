@@ -18,7 +18,7 @@
 .Op Fl j Ar channel
 .Op Fl k Ar keyword
 .Op Fl b Ar prefix
-.Op Fl P Ar preamble
+.Op Fl P
 .Op Fl w
 .Op Fl q
 .Op Fl S
@@ -97,17 +97,25 @@ with the
 .Ar prefix
 ommited
 .
-.It Fl P Ar preamble
-disable normal handshake, and send
-.Ar preamble
-rather than
+.It Fl P
+enter rudimentary s2s mode for bad ircds.
+
+this disables normal handshake, sources lines with
+.Fl n Ar nick ,
+and sends a
+.Ql SERVER
+line with
+.Fl n Ar nick
+as the name and
+.Fl r Ar realname
+as the description.
+
 .Dl "PRIVMSG #channel :"
-in front of bare lines.
-additionally send
-.Ar preamble
-before
+will no longer be included in front of bare lines.
+additionally sources
 .Ql PONG
-replies.
+lines with
+.Fl n Ar nick .
 
 this option may break or silently ignore other options,
 including
