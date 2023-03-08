@@ -248,7 +248,10 @@ main(int argc, char *argv[]) {
 			if(++i < argc) caps = argv[i];
 			break;
 		case 's':
-			if(++i < argc) sasl = argv[i];
+			if(++i < argc)
+				if (strlen(argv[i]) > 0 ||
+						!(sasl = getenv("SCIRC_SASL")))
+					sasl = argv[i];
 			break;
 		case 'n':
 			if(++i < argc) strlcpy(nick, argv[i], sizeof nick);
@@ -260,7 +263,10 @@ main(int argc, char *argv[]) {
 			if(++i < argc) strlcpy(botprefix, argv[i], sizeof botprefix);
 			break;
 		case 'k':
-			if(++i < argc) password = argv[i];
+			if(++i < argc)
+				if (strlen(argv[i]) > 0 ||
+						!(password = getenv("SCIRC_PASS")))
+					password = argv[i];
 			break;
 		case 'P':
 			pmode = 1;
@@ -277,7 +283,7 @@ main(int argc, char *argv[]) {
 		case 'v':
 			eprint("scirc-"VERSION"\n");
 		default:
-			eprint("usage: scirc [-h host] [-p port] [-n nick] [-u username] [-r realname] [-a caps] [-s sasltoken] [-j channel] [-k keyword] [-b prefix] [-w] [-q] [-S] [-v]\n");
+			eprint("usage: scirc [-h host] [-p port] [-n nick] [-u username] [-r realname] [-a caps] [-s sasltoken] [-j channel] [-k password] [-b prefix] [-w] [-q] [-S] [-v]\n");
 		}
 	}
 	/* init */

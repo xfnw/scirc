@@ -16,7 +16,7 @@
 .Op Fl a Ar caps
 .Op Fl s Ar sasltoken
 .Op Fl j Ar channel
-.Op Fl k Ar keyword
+.Op Fl k Ar password
 .Op Fl b Ar prefix
 .Op Fl P
 .Op Fl w
@@ -73,17 +73,28 @@ requires
 to be specified in
 .Fl a Ar caps
 to be useful
+
+if
+.Ar sasltoken
+is set to an empty string, the value will be read from the
+.Ev SCIRC_SASL
+environment variable
 .
 .It Fl j Ar channel
 join
 .Ar channel
 on connect
 .
-.It Fl k Ar keyword
+.It Fl k Ar password
 specify
-.Ar keyword
-when joining the
-.Fl j Ar channel
+.Ar password
+to send when connecting.
+
+if
+.Ar password
+is set to an empty string, the value will be read from the
+.Ev SCIRC_PASS
+environment variable
 .
 .It Fl b Ar prefix
 enable mode for making rudimentary pipe-based irc bots,
