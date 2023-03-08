@@ -15,6 +15,7 @@ static char *real;
 static char *ident;
 static char *caps;
 static char *sasl;
+static char *psource;
 static char nick[32];
 static char bufin[4096];
 static char bufout[4096];
@@ -166,9 +167,16 @@ parsesrv(char *cmd) {
 			sout("AUTHENTICATE %s", sasl);
 		if (!strcmp("903", cmd) && sasl)
 			sout("CAP END");
-		if (!strcmp("433", cmd) && strlen(nick) + 2 < sizeof(nick)) {
-			strcat(nick, "_");
-			sout("NICK %s", nick);
+		if (psource) {
+			if (!strcmp("376", cmd) && !strcmp(psource, par)) {
+				sout("376 %s :End", usr);
+				state = 2;
+			}
+		} else {
+			if (!strcmp("433", cmd) && strlen(nick) + 2 < sizeof(nick)) {
+				strcat(nick, "_");
+				sout("NICK %s", nick);
+			}
 		}
 	}
 	if(!strcmp("PONG", cmd))
@@ -194,7 +202,10 @@ parsesrv(char *cmd) {
 		}
 	}
 	else if(!strcmp("PING", cmd))
-		sout("PONG %s", txt);
+		if (psource) {
+			sout(":%s PONG :%s%s", psource, par, txt);
+		} else
+			sout("PONG :%s%s", par, txt);
 	else {
 		pout(usr, "%s %s :%s", cmd, par, txt);
 		if(!strcmp("NICK", cmd) && !strcmp(usr, nick))
@@ -248,6 +259,9 @@ main(int argc, char *argv[]) {
 		case 'k':
 			if(++i < argc) password = argv[i];
 			break;
+		case 'P':
+			if(++i < argc) psource = argv[i];
+			break;
 		case 'w':
 			waitjoin = 1;
 			break;
@@ -268,20 +282,24 @@ main(int argc, char *argv[]) {
 	srv = fdopen(i, "r+");
 	/* login */
 	state = 1;
-	sout("CAP LS 302");
 	if(password)
 		sout("PASS %s", password);
 	if(!ident)
 		ident = nick;
 	if(!real)
 		real = nick;
-	sout("NICK %s", nick);
-	sout("USER %s 0 * :%s", ident, real);
+	if (psource) {
+		sout("SERVER %s :%s", psource, nick);
+	} else {
+		sout("CAP LS 302");
+		sout("NICK %s", nick);
+		sout("USER %s 0 * :%s", ident, real);
 
-	if(caps)
-		sout("CAP REQ :%s", caps);
-	else
-		sout("CAP END");
+		if(caps)
+			sout("CAP REQ :%s", caps);
+		else
+			sout("CAP END");
+	}
 
 	fflush(srv);
 	setbuf(stdout, NULL);
