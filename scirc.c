@@ -76,7 +76,10 @@ parsein(char *s) {
 		return;
 	skip(s, '\n');
 	if(s[0] != '/') {
-		privmsg(channel, s);
+		if (psource)
+			sout(":%s %s", psource, s);
+		else
+			privmsg(channel, s);
 		return;
 	}
 	c = *++s;
