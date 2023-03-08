@@ -45,7 +45,7 @@ to connect to
 .
 .It Fl n Ar nick
 set the nickname. uses value of the
-.Cm USER
+.Ev USER
 environment variable by default
 .
 .It Fl u Ar username
@@ -89,6 +89,10 @@ on connect
 specify
 .Ar password
 to send when connecting.
+for authenticating with irc services such as
+.Em NickServ ,
+.Fl s
+sasl should be preferred.
 
 if
 .Ar password
