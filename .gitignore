@@ -2,5 +2,6 @@
 scirc
 irc.log
 pid.bnc
-*.tar.gz
+*.tar.zst
+*.html
 
