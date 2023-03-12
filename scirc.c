@@ -153,8 +153,11 @@ parsesrv(char *cmd) {
 		if(!strcmp("CAP", cmd)) {
 			char dup[512], *reply;
 			strcpy(dup, par);
-			strtok(dup, " ");
-			reply = strtok(NULL, " ");
+			reply = strtok(dup, " ");
+			if(reply)
+				reply = strtok(NULL, " ");
+			if(!reply)
+				return;
 			if(!strcmp(reply,"ACK")) {
 				if(sasl && strstr(txt,"sasl"))
 					sout("AUTHENTICATE PLAIN");
