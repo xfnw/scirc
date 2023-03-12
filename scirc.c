@@ -151,17 +151,17 @@ parsesrv(char *cmd) {
 	}
 	if(state == 1) {
 		if(!strcmp("CAP", cmd)) {
-			char dup[512];
+			char dup[512], *reply;
 			strcpy(dup, par);
 			strtok(dup, " ");
-			strcpy(dup, strtok(NULL, " "));
-			if(!strcmp(dup,"ACK")) {
+			reply = strtok(NULL, " ");
+			if(!strcmp(reply,"ACK")) {
 				if(sasl && strstr(txt,"sasl"))
 					sout("AUTHENTICATE PLAIN");
 				else
 					sout("CAP END");
 			}
-			if(!strcmp(dup,"NAK")) {
+			if(!strcmp(reply,"NAK")) {
 				if(!sasl)
 					sout("CAP END");
 			}
