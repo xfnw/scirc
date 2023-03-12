@@ -284,7 +284,11 @@ main(int argc, char *argv[]) {
 			autoswitch = 1;
 			break;
 		case 'v':
+#ifdef VERSION
 			eprint("scirc-"VERSION"\n");
+#else
+			eprint("scirc-unknown\n");
+#endif
 		default:
 			eprint("usage: scirc [-h host] [-p port] [-n nick] [-u username] [-r realname] [-a caps] [-s sasltoken] [-j channel] [-k password] [-b prefix] [-w] [-q] [-S] [-v]\n");
 		}
