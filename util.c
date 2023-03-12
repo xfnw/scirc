@@ -62,6 +62,22 @@ skip(char *s, char c) {
 	return s;
 }
 
+static char*
+skips(char *s, char c) {
+	if(*s == c) {
+		*s++ = '\0';
+		return s;
+	}
+	do
+		do
+			s++;
+		while(*(s-1) != ' ' && *(s-1) != '\0');
+	while(*(s-1) != '\0' && *s != c && *s != '\0');
+	if(*s != '\0')
+		*s++ = '\0';
+	return s;
+}
+
 static void
 trim(char *s) {
 	char *e;

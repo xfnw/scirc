@@ -139,7 +139,7 @@ parsesrv(char *cmd) {
 	}
 	skip(cmd, '\r');
 	par = skip(cmd, ' ');
-	txt = skip(par, ':');
+	txt = skips(par, ':');
 	trim(par);
 	if(!strcmp("001", cmd)) {
 		state = 2;
