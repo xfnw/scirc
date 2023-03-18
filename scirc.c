@@ -6,6 +6,7 @@
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
+#include <stdbool.h>
 #include <sys/select.h>
 
 static char *host = "localhost";
@@ -20,11 +21,11 @@ static char bufin[4096];
 static char bufout[4096];
 static char channel[256];
 static char botprefix[32] = "\n";
-static int state = 0;
-static int waitjoin = 0;
-static int quiet = 0;
-static int autoswitch = 0;
-static int pmode = 0;
+static char state = 0;
+static bool waitjoin = 0;
+static bool quiet = 0;
+static bool autoswitch = 0;
+static bool pmode = 0;
 static time_t trespond;
 static FILE *srv;
 
