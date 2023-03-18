@@ -176,7 +176,7 @@ parsesrv(char *cmd) {
 		if (pmode) {
 			if (!strcmp("376", cmd) && !strcmp(nick, par)) {
 				sout("376 %s :End", usr);
-				state = 2;
+				state = 3;
 			}
 		} else {
 			if (!strcmp("433", cmd) && strlen(nick) + 2 < sizeof(nick)) {
