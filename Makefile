@@ -25,7 +25,7 @@ scirc: ${OBJ}
 
 check:
 	@echo checking with cppcheck --enable=all
-	@cppcheck --enable=all --suppress=missingIncludeSystem .
+	@cppcheck --enable=all --suppress=missingIncludeSystem -DVERSION=test .
 
 clean:
 	@echo cleaning
