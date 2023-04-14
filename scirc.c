@@ -210,7 +210,7 @@ parsesrv(char *cmd) {
 	}
 	else if(!strcmp("PING", cmd))
 		if (pmode) {
-			sout(":%s PONG :%s%s", nick, par, txt);
+			sout(":%s PONG %s %s", nick, usr, par);
 		} else
 			sout("PONG :%s%s", par, txt);
 	else {
