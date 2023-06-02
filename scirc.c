@@ -16,6 +16,7 @@ static char *real;
 static char *ident;
 static char *caps;
 static char *sasl;
+static char *exiton;
 static char nick[32];
 static char bufin[4096];
 static char bufout[4096];
@@ -218,6 +219,9 @@ parsesrv(char *cmd) {
 		if(!strcmp("NICK", cmd) && !strcmp(usr, nick))
 			strlcpy(nick, txt, sizeof nick);
 	}
+
+	if(exiton && !strcmp(exiton, cmd))
+		eprint("scirc: exiting on %s\n", exiton);
 }
 
 int
@@ -250,6 +254,9 @@ main(int argc, char *argv[]) {
 			break;
 		case 'a':
 			if(++i < argc) caps = argv[i];
+			break;
+		case 'e':
+			if(++i < argc) exiton = argv[i];
 			break;
 		case 's':
 			if(++i < argc)
@@ -291,7 +298,7 @@ main(int argc, char *argv[]) {
 			eprint("scirc-unknown\n");
 #endif
 		default:
-			eprint("usage: scirc [-h host] [-p port] [-n nick] [-u username] [-r realname] [-a caps] [-s sasltoken] [-j channel] [-k password] [-b prefix] [-w] [-q] [-S] [-v]\n");
+			eprint("usage: scirc [-h host] [-p port] [-n nick] [-u username] [-r realname] [-a caps] [-s sasltoken] [-j channel] [-k password] [-b prefix] [-e command] [-w] [-q] [-S] [-v]\n");
 		}
 	}
 	/* init */

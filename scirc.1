@@ -1,4 +1,4 @@
-.Dd March 18th, 2023
+.Dd June 2nd, 2023
 .Dt scirc 1
 .Os
 .
@@ -18,6 +18,7 @@
 .Op Fl j Ar channel
 .Op Fl k Ar password
 .Op Fl b Ar prefix
+.Op Fl e Ar command
 .Op Fl P
 .Op Fl w
 .Op Fl q
@@ -111,6 +112,11 @@ to
 with the
 .Ar prefix
 ommited
+.
+.It Fl e Ar command
+exit after receiving
+.Ar command
+from the server
 .
 .It Fl P
 enter rudimentary s2s mode for bad ircds.
