@@ -172,10 +172,12 @@ parsesrv(char *cmd) {
 					sout("CAP END");
 			}
 		}
-		if (!strcmp("AUTHENTICATE", cmd) && sasl)
-			sout("AUTHENTICATE %s", sasl);
-		if (!strcmp("903", cmd) && sasl)
-			sout("CAP END");
+		if (sasl) {
+			if (!strcmp("AUTHENTICATE", cmd))
+				sout("AUTHENTICATE %s", sasl);
+			else if (!strcmp("903", cmd))
+				sout("CAP END");
+		}
 		if (pmode) {
 			if (!strcmp("376", cmd) && !strcmp(nick, par)) {
 				sout("376 %s :End", usr);
