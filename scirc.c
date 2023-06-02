@@ -193,8 +193,7 @@ parsesrv(char *cmd) {
 	if(!strcmp("PRIVMSG", cmd)) {
 		pout(par, "<%s> %s", usr, txt);
 		if ((*botprefix != '\n')) {
-			if ((strlen(txt) > strlen(botprefix)) &&
-					!(strncmp(botprefix, txt, strlen(botprefix)))) {
+			if (!(strncmp(botprefix, txt, strlen(botprefix)))) {
 				if (autoswitch) {
 					if (!strcmp(nick, par))
 						strlcpy(channel, usr, sizeof channel);
