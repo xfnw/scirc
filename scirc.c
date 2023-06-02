@@ -23,7 +23,7 @@ static char bufout[4096];
 static char channel[256];
 static char botprefix[32] = "\n";
 static char state = 0;
-static bool waitjoin = 0;
+static char wait = 0;
 static bool quiet = 0;
 static bool autoswitch = 0;
 static bool pmode = 0;
@@ -283,7 +283,10 @@ main(int argc, char *argv[]) {
 			pmode = 1;
 			break;
 		case 'w':
-			waitjoin = 1;
+			wait = 2;
+			break;
+		case 'W':
+			wait = 1;
 			break;
 		case 'q':
 			quiet = 1;
@@ -298,7 +301,7 @@ main(int argc, char *argv[]) {
 			eprint("scirc-unknown\n");
 #endif
 		default:
-			eprint("usage: scirc [-h host] [-p port] [-n nick] [-u username] [-r realname] [-a caps] [-s sasltoken] [-j channel] [-k password] [-b prefix] [-e command] [-w] [-q] [-S] [-v]\n");
+			eprint("usage: scirc [-h host] [-p port] [-n nick] [-u username] [-r realname] [-a caps] [-s sasltoken] [-j channel] [-k password] [-b prefix] [-e command] [-w] [-W] [-q] [-S] [-v]\n");
 		}
 	}
 	/* init */
@@ -352,7 +355,7 @@ main(int argc, char *argv[]) {
 			parsesrv(bufin);
 			trespond = time(NULL);
 		}
-		if(FD_ISSET(0, &rd) && (!waitjoin || state == 3)) {
+		if(FD_ISSET(0, &rd) && (state > wait)) {
 			if(fgets(bufin, sizeof bufin, stdin) == NULL)
 				eprint("scirc: broken pipe\n");
 			parsein(bufin);

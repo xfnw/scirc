@@ -21,6 +21,7 @@
 .Op Fl e Ar command
 .Op Fl P
 .Op Fl w
+.Op Fl W
 .Op Fl q
 .Op Fl S
 .
@@ -149,6 +150,16 @@ and
 wait until after joining a channel before accepting any
 input. useful for pipes, however you may become stuck during
 a failed registration
+.
+.It Fl W
+same as
+.Fl w
+except wait for registration instead of waiting for joining
+a channel
+
+incompatible with
+.Fl w ,
+the last specified will take precedence
 .
 .It Fl q
 do not echo messages as they are sent
