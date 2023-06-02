@@ -27,6 +27,7 @@ static char wait = 0;
 static bool quiet = 0;
 static bool autoswitch = 0;
 static bool pmode = 0;
+static bool nopipe = 0;
 static time_t trespond;
 static FILE *srv;
 
@@ -294,6 +295,9 @@ main(int argc, char *argv[]) {
 		case 'S':
 			autoswitch = 1;
 			break;
+		case 'i':
+			nopipe = 1;
+			break;
 		case 'v':
 #ifdef VERSION
 			eprint("scirc-"VERSION"\n");
@@ -301,7 +305,7 @@ main(int argc, char *argv[]) {
 			eprint("scirc-unknown\n");
 #endif
 		default:
-			eprint("usage: scirc [-h host] [-p port] [-n nick] [-u username] [-r realname] [-a caps] [-s sasltoken] [-j channel] [-k password] [-b prefix] [-e command] [-w] [-W] [-q] [-S] [-v]\n");
+			eprint("usage: scirc [-h host] [-p port] [-n nick] [-u username] [-r realname] [-a caps] [-s sasltoken] [-j channel] [-k password] [-b prefix] [-e command] [-P] [-i] [-w] [-W] [-q] [-S] [-v]\n");
 		}
 	}
 	/* init */
@@ -356,8 +360,11 @@ main(int argc, char *argv[]) {
 			trespond = time(NULL);
 		}
 		if(FD_ISSET(0, &rd) && (state > wait)) {
-			if(fgets(bufin, sizeof bufin, stdin) == NULL)
+			if(fgets(bufin, sizeof bufin, stdin) == NULL) {
+				if(nopipe)
+					continue;
 				eprint("scirc: broken pipe\n");
+			}
 			parsein(bufin);
 		}
 	}

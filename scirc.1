@@ -20,6 +20,7 @@
 .Op Fl b Ar prefix
 .Op Fl e Ar command
 .Op Fl P
+.Op Fl i
 .Op Fl w
 .Op Fl W
 .Op Fl q
@@ -145,6 +146,11 @@ including
 .Fl j ,
 and
 .Fl S
+.
+.It Fl i
+ignore the
+.Pa stdin
+pipe being broken
 .
 .It Fl w
 wait until after joining a channel before accepting any
