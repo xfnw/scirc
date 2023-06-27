@@ -218,8 +218,10 @@ static void parsesrv(char *cmd) {
 			strlcpy(nick, txt, sizeof nick);
 	}
 
-	if (exiton && !strcmp(exiton, cmd))
-		eprint("scirc: exiting on %s\n", exiton);
+	if (exiton && !strcmp(exiton, cmd)) {
+		fprintf(stderr, "scirc: exiting on %s\n", exiton);
+		exit(0);
+	}
 }
 
 int main(int argc, char *argv[]) {
