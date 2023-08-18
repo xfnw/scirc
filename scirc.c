@@ -187,25 +187,26 @@ static void parsesrv(char *cmd) {
 	if (!strcmp("PONG", cmd))
 		return;
 	if (!strcmp("PRIVMSG", cmd)) {
+		char *target;
+
 		pout(par, "<%s> %s", usr, txt);
+
+		if (strcmp(nick, par))
+			target = par;
+		else
+			target = usr;
+
 		if ((*botprefix != '\n')) {
 			if (!(strncmp(botprefix, txt, strlen(botprefix)))) {
 				if (autoswitch) {
-					if (!strcmp(nick, par))
-						strlcpy(channel, usr,
-							sizeof channel);
-					else
-						strlcpy(channel, par,
-							sizeof channel);
+					strlcpy(channel, target,
+						sizeof channel);
 				}
 				fprintf(stdout, "%s\n",
 					txt + strlen(botprefix));
 			}
 		} else if (autoswitch) {
-			if (!strcmp(nick, par))
-				strlcpy(channel, usr, sizeof channel);
-			else
-				strlcpy(channel, par, sizeof channel);
+			strlcpy(channel, target, sizeof channel);
 		}
 	} else if (!strcmp("PING", cmd))
 		if (pmode) {
